@@ -19,12 +19,14 @@ import com.fasterxml.jackson.databind.type.MapLikeType;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.common.util.Enumerator;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.emfjson.jackson.databind.property.EObjectPropertyMap;
 import org.emfjson.jackson.databind.type.EcoreType;
 import org.emfjson.jackson.module.EMFModule;
 
+import java.util.List;
 import java.util.Map;
 
 public class EMFDeserializers extends Deserializers.Base {
@@ -36,7 +38,7 @@ public class EMFDeserializers extends Deserializers.Base {
 	private final JsonDeserializer<EObject> _objectDeserializer;
 	private final CollectionDeserializer _collectionDeserializer;
 
-	public EMFDeserializers(EMFModule module) {
+	public EMFDeserializers(EMFModule module, Map<EClass, List<EClass>> subClassCache) {
 		EObjectPropertyMap.Builder builder = new EObjectPropertyMap.Builder(
 				module.getIdentityInfo(),
 				module.getTypeInfo(),

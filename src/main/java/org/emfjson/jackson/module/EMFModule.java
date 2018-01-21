@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.emfjson.jackson.annotations.EcoreIdentityInfo;
 import org.emfjson.jackson.annotations.EcoreReferenceInfo;
@@ -30,7 +32,10 @@ import org.emfjson.jackson.handlers.BaseURIHandler;
 import org.emfjson.jackson.handlers.URIHandler;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -161,7 +166,11 @@ public class EMFModule extends SimpleModule {
 
 	private URIHandler handler;
 
+  private Map<EClass, List<EClass>> subClassCache;
+
 	public EMFModule() {
+	  this.subClassCache=new HashMap<EClass,List<EClass>> ();
+	  
 	}
 
 	@Override
@@ -190,9 +199,10 @@ public class EMFModule extends SimpleModule {
 			referenceDeserializer = new EcoreReferenceDeserializer(referenceInfo, typeInfo);
 		}
 
-		EMFDeserializers deserializers = new EMFDeserializers(this);
+		EMFDeserializers deserializers = new EMFDeserializers(this,subClassCache);
 		EMFSerializers serializers = new EMFSerializers(this);
 
+		
 		context.addDeserializers(deserializers);
 		context.addSerializers(serializers);
 

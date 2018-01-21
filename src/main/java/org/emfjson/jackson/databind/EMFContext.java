@@ -271,33 +271,44 @@ public class EMFContext {
 
 
 
+	static Map<EClass,List<EClass>> subTypeMap=new HashMap<>();
 
 
-	public static List<EClass> allSubTypes(DeserializationContext ctxt, EClass eClass) {
-		final List<EClass> subTypes = new ArrayList<>();
-		if (eClass == null) {
-			return subTypes;
-		}
 
-		EPackage ePackage = eClass.getEPackage();
-		while (ePackage.getESuperPackage() != null) {
-			ePackage = ePackage.getESuperPackage();
-		}
 
-		subTypes.add(eClass);
-
-		for (Iterator<EObject> it = ePackage.eAllContents(); it.hasNext(); ) {
-			EObject current = it.next();
-			if (current instanceof EClass) {
-				EClass currentClass = (EClass) current;
-
-				if (!currentClass.isAbstract() && eClass.isSuperTypeOf(currentClass)) {
-					subTypes.add(currentClass);
-				}
-			}
-		}
-
-		return subTypes;
-	}
+  public static List<EClass> allSubTypes(DeserializationContext ctxt, EClass eClass) {
+    
+      
+      if(subTypeMap.containsKey(eClass)) 
+        {
+        return subTypeMap.get(eClass);
+        }
+  
+      
+  	final List<EClass> subTypes = new ArrayList<>();
+  	if (eClass == null) {
+  		return subTypes;
+  	}
+  
+  	EPackage ePackage = eClass.getEPackage();
+  	while (ePackage.getESuperPackage() != null) {
+  		ePackage = ePackage.getESuperPackage();
+  	}
+  
+  	subTypes.add(eClass);
+  
+  	for (Iterator<EObject> it = ePackage.eAllContents(); it.hasNext(); ) {
+  		EObject current = it.next();
+  		if (current instanceof EClass) {
+  			EClass currentClass = (EClass) current;
+  
+  			if (!currentClass.isAbstract() && eClass.isSuperTypeOf(currentClass)) {
+  				subTypes.add(currentClass);
+  			}
+  		}
+  	}
+  	subTypeMap.put(eClass, subTypes);
+  	return subTypes;
+  }
 
 }
